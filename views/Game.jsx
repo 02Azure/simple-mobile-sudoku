@@ -70,7 +70,7 @@ export default function Game({ route, navigation }) {
       .then(data => {
         if(data.status === "solved") {
           clearTimeout(countupId)
-          navigation.replace("Finish", { playerName, countup })
+          navigation.replace("Finish", { playerName, countup, difficulty })
 
         } else {
           Alert.alert(

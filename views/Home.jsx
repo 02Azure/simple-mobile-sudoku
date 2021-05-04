@@ -41,7 +41,7 @@ export default function Home({ navigation }) {
         onPress = { () => navigation.replace("Game", { playerName, difficulty }) }
       >
         <Text style={styles.buttonText}>Start!</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>     
     </View>
   )
 }
