@@ -8,10 +8,10 @@ export default function Home({ navigation }) {
 
   return (
     <View style={ styles.pageScreen }>
-      <Text style={ styles.mainTitle } >Sudoku</Text>
+      <Text style={ styles.mainTitle }>Sudoku</Text>
 
       <View style = { styles.formGroup }>
-        <Text style={ styles.label } >Enter your player's name:</Text>
+        <Text style={ styles.label }>Enter your player's name:</Text>
         <TextInput
           style = { styles.input }
           value = { playerName }

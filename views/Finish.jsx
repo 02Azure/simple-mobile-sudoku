@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 
 export default function Finish({ route, navigation }) {
-  const { playerName } = route.params
+  const { playerName, countup } = route.params
 
   return (
     <View style={ styles.pageScreen }>
@@ -15,7 +15,7 @@ export default function Finish({ route, navigation }) {
           resizeMode = "contain"
         />
         <Text style={ styles.subText }>Congratulations { playerName }!</Text> 
-        <Text style={ styles.subText }>You masterfully beat this puzzle!</Text> 
+        <Text style={ styles.subText }>You masterfully beat this puzzle in { countup } second!</Text> 
       </View>
 
       <TouchableOpacity

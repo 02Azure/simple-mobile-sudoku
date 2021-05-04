@@ -9,6 +9,7 @@ export default function Game({ route, navigation }) {
   const [board, setBoard] = useState([])
   const [initialBoard, setInitialBoard] = useState([])
   const [loading, setLoading] = useState(true)
+  const [countup, setCountup] = useState(0)
 
   let inputTiles = []
   let boardSize = 9
@@ -20,15 +21,30 @@ export default function Game({ route, navigation }) {
         setInitialBoard(deepCopy(data.board))
         setBoard(data.board)
         setLoading(false)
+
+        setTimeout(() => {
+          setCountup(countup + 1)
+        }, 1000)
+
       })
   }, [])
 
-  function changeNum(num, row, column){
-    let newBoard = [...board] //shallow copy the array
-    newBoard[row] = [...newBoard[row]] //only deep copy one row that needed to be mutated
-    newBoard[row][column] = +num
+  useEffect(() => {
+    if(countup) {
+      setTimeout(() => {
+        setCountup(countup + 1)
+      }, 1000)
+    }
+  }, [countup])
 
-    setBoard(newBoard)
+  function changeNum(num, row, column){
+    if(!isNaN(+num)) { //cek kalau yg diinput bukan angka, abaikan
+      let newBoard = [...board] //shallow copy array board
+      newBoard[row] = [...newBoard[row]] //deep copy satu row yang mau dimutasi saja
+      newBoard[row][column] = +num
+  
+      setBoard(newBoard)
+    }
   }
 
   function checkSolution() {
@@ -42,7 +58,7 @@ export default function Game({ route, navigation }) {
       .then(response => response.json())
       .then(data => {
         if(data.status === "solved") {
-          navigation.replace("Finish", { playerName })
+          navigation.replace("Finish", { playerName, countup })
 
         } else {
           Alert.alert(
@@ -85,6 +101,8 @@ export default function Game({ route, navigation }) {
     .map(key => key + '=' + `%5B${encodeBoard(params[key])}%5D`)
     .join('&');
   
+
+  // ========== input tiles definition ==================
   for(let n = 0; n < boardSize; n++) {
     for(let m = 0; m < boardSize; m++) {
       let initial = false
@@ -105,43 +123,50 @@ export default function Game({ route, navigation }) {
     }
   }
 
+  // ============== timer display =====================
+  let min, sec; //mengatur display yang timer yang ditampilkan dalam format mm:ss
+  countup < 600 ? min = "0" + Math.floor(countup / 60) : min = Math.floor(countup / 60)
+  countup % 60 < 10 ? sec = "0" + countup % 60 : sec = countup % 60		
+
   return (
-    <View style={ styles.pageScreen } >
+    <View style={ styles.pageScreen }>
       <Text style={ styles.mainTitle } >Sudoku</Text>
       { loading ? 
         <Text style={ styles.loadingText }>Generating puzzle board...</Text> 
 
         :
-        <>
-        <View  style={ styles.tilesContainer }>
-          { inputTiles }
+
+        <View style= { styles.puzzleContainer }>
+          <Text style={ styles.countupTimer }>{ min + ":" + sec }</Text>
+
+          <View style={ styles.tilesContainer }>
+            { inputTiles }
+          </View>
+
+          <View style={ styles.buttonContainer }>
+            <TouchableOpacity
+              onPress = { checkSolution }
+              style = { styles.customButton }
+            >
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress = { showSolution }
+              style = { [styles.customButton, styles.greenButton] }
+            >
+              <Text style={ styles.buttonText }>Solution</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress = { resetBoard }
+              style = { [styles.customButton, styles.redButton] }
+            >
+              <Text style={ styles.buttonText }>Reset</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <View  style={ styles.buttonContainer }>
-          <TouchableOpacity
-            onPress = { checkSolution }
-            style = { styles.customButton }
-          >
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress = { showSolution }
-            style = { [styles.customButton, styles.greenButton] }
-          >
-            <Text style={ styles.buttonText }>Solution</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress = { resetBoard }
-            style = { [styles.customButton, styles.redButton] }
-          >
-            <Text style={ styles.buttonText }>Reset</Text>
-          </TouchableOpacity>
-        </View>
-        </>
       }
-
     </View>
   );
 }
@@ -149,7 +174,7 @@ export default function Game({ route, navigation }) {
 const styles = StyleSheet.create({
   pageScreen: {
     alignItems: "center",
-    paddingVertical: 30,
+    paddingTop: 30,
     height: "100%",
     backgroundColor: "navajowhite"
   },
@@ -160,11 +185,29 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
 
+  loadingText: {
+    marginTop: 64,
+    fontSize: 24
+  },
+
+  puzzleContainer: {
+    alignItems: "center",
+    height: "90%",
+    justifyContent: "space-between",
+    backgroundColor: "navajowhite"
+  },
+
+  countupTimer: {
+    fontSize: 16,
+    fontWeight: "bold"
+  }, 
+
   tilesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    marginVertical: 30,
+    marginVertical: 20,
+    width: 350
   },
 
   buttonContainer: {
@@ -185,11 +228,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "bold"
-  },
-
-  loadingText: {
-    marginTop: 64,
-    fontSize: 24
   },
 
   greenButton: {
