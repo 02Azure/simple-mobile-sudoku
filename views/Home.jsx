@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
 
   mainTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
 
   selectInput: {
     height: 38,
+    fontSize: 18,
     width: "100%",
     backgroundColor: "cornsilk",
     textAlign: "center",

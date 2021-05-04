@@ -24,7 +24,8 @@ export default function Game({ route, navigation }) {
   }, [])
 
   function changeNum(num, row, column){
-    let newBoard = [...board]
+    let newBoard = [...board] //shallow copy the array
+    newBoard[row] = [...newBoard[row]] //only deep copy one row that needed to be mutated
     newBoard[row][column] = +num
 
     setBoard(newBoard)
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   },
 
   mainTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
     textAlign: "center"
   },

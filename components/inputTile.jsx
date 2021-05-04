@@ -15,7 +15,7 @@ export default function InputTile({ num, row, column, changeNum, isInitial }) {
   return (
       <TextInput
         style = { styling }
-        value = { num.toString() }
+        value = { num !== 0 ? num.toString() : "" }
         onChangeText = { num => changeNum(num, row, column) }
         keyboardType = "numeric"
         maxLength = { 1 }
