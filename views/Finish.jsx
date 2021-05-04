@@ -28,11 +28,10 @@ export default function Finish({ route, navigation }) {
   )
 }
 
-
 const styles = StyleSheet.create({
   pageScreen: {
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 30,
     height: "100%",
     justifyContent: "space-between",
     backgroundColor: "navajowhite"

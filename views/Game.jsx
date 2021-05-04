@@ -1,41 +1,52 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from "react-redux"
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
 import InputTile from "../components/InputTile"
+import { setBoard, setInitialBoard, getPuzzle } from "../store/actions"
 import deepCopy from "../helpers/deepCopy2DimArr"
 
 export default function Game({ route, navigation }) {
+  const dispatch = useDispatch()
   const { playerName, difficulty } = route.params
 
-  const [board, setBoard] = useState([])
-  const [initialBoard, setInitialBoard] = useState([])
+  const board = useSelector(state => state.board)
+  const initialBoard = useSelector(state => state.initialBoard)
+
   const [loading, setLoading] = useState(true)
   const [countup, setCountup] = useState(0)
+
+  const countupId = useRef(0) //karena state tidak terbaca di hook component will unmount
 
   let inputTiles = []
   let boardSize = 9
 
   useEffect(() => {
-    fetch(`https://sugoku.herokuapp.com/board?difficulty=${difficulty}`)
+    dispatch(getPuzzle(difficulty))
       .then(response => response.json())
       .then(data => {
-        setInitialBoard(deepCopy(data.board))
-        setBoard(data.board)
+        dispatch(setInitialBoard(deepCopy(data.board)))
+        dispatch(setBoard(data.board))
         setLoading(false)
 
         setTimeout(() => {
           setCountup(countup + 1)
         }, 1000)
-
       })
   }, [])
 
   useEffect(() => {
     if(countup) {
-      setTimeout(() => {
+      countupId.current = (setTimeout(() => {
         setCountup(countup + 1)
-      }, 1000)
+      }, 1000))
     }
   }, [countup])
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(countupId.current) //unsubscribe saat unmount
+    }
+  },[])
 
   function changeNum(num, row, column){
     if(!isNaN(+num)) { //cek kalau yg diinput bukan angka, abaikan
@@ -43,7 +54,7 @@ export default function Game({ route, navigation }) {
       newBoard[row] = [...newBoard[row]] //deep copy satu row yang mau dimutasi saja
       newBoard[row][column] = +num
   
-      setBoard(newBoard)
+      dispatch(setBoard(newBoard))
     }
   }
 
@@ -53,11 +64,12 @@ export default function Game({ route, navigation }) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: encodeParams({board})
+      body: encodeParams({ board })
     })
       .then(response => response.json())
       .then(data => {
         if(data.status === "solved") {
+          clearTimeout(countupId)
           navigation.replace("Finish", { playerName, countup })
 
         } else {
@@ -87,11 +99,13 @@ export default function Game({ route, navigation }) {
       body: encodeParams({ board: initialBoard })
     })
       .then(response => response.json())
-      .then(data => setBoard(data.solution))
+      .then(data => { 
+        dispatch(setBoard(data.solution))
+      })
   }
 
   function resetBoard() {
-    setBoard(deepCopy(initialBoard))
+    dispatch(setBoard(deepCopy(initialBoard)))
   }
 
   const encodeBoard = (board) => board.reduce((result, row, i) => result + `%5B${encodeURIComponent(row)}%5D${i === board.length -1 ? '' : '%2C'}`, '')
@@ -101,7 +115,6 @@ export default function Game({ route, navigation }) {
     .map(key => key + '=' + `%5B${encodeBoard(params[key])}%5D`)
     .join('&');
   
-
   // ========== input tiles definition ==================
   for(let n = 0; n < boardSize; n++) {
     for(let m = 0; m < boardSize; m++) {
@@ -122,7 +135,6 @@ export default function Game({ route, navigation }) {
       )
     }
   }
-
   // ============== timer display =====================
   let min, sec; //mengatur display yang timer yang ditampilkan dalam format mm:ss
   countup < 600 ? min = "0" + Math.floor(countup / 60) : min = Math.floor(countup / 60)
@@ -237,5 +249,4 @@ const styles = StyleSheet.create({
   redButton: {
     backgroundColor: "crimson"
   }
-
 })

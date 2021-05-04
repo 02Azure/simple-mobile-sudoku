@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, TextInput, Dimensions, ImageBackground } from 'react-native';
+import React from 'react'
+import { StyleSheet, TextInput } from 'react-native'
 
 export default function InputTile({ num, row, column, changeNum, isInitial }) {
   let styling = [styles.input]
@@ -13,16 +13,16 @@ export default function InputTile({ num, row, column, changeNum, isInitial }) {
   if(isInitial) styling.push(styles.initialNum)
 
   return (
-      <TextInput
-        style = { styling }
-        value = { num !== 0 ? num.toString() : "" }
-        onChangeText = { num => changeNum(num, row, column) }
-        keyboardType = "numeric"
-        maxLength = { 1 }
-        selectTextOnFocus = { true }
-        editable = { !isInitial }
-      />
-  );
+    <TextInput
+      style = { styling }
+      value = { num !== 0 ? num.toString() : "" }
+      onChangeText = { num => changeNum(num, row, column) }
+      keyboardType = "numeric"
+      maxLength = { 1 }
+      selectTextOnFocus = { true }
+      editable = { !isInitial }
+    />
+  )
 }
 
 const styles = StyleSheet.create({
@@ -69,4 +69,4 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "bold"
   }
-});
+})
