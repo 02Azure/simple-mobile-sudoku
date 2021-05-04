@@ -1,4 +1,4 @@
-export default function deepCopy(arr) {
+export default function deepCopy2Dim(arr) {
   let deepCopy = []
 
   for(let n = 0; n < arr.length; n++) {
