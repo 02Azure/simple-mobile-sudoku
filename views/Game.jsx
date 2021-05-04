@@ -163,8 +163,7 @@ const styles = StyleSheet.create({
   tilesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    alignContent: "center",
-    width: 350,
+    justifyContent: "center",
     marginVertical: 30,
   },
 
