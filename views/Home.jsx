@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Platform, StatusBar } from 'react-native'
 import { Picker } from "@react-native-picker/picker"
 
 export default function Home({ navigation }) {
   const [playerName, setPlayerName] = useState("Guess")
   const [difficulty, setDifficulty] = useState("easy")
 
+  let screenStyling = [styles.pageScreen]
+
+  if(Platform.OS === "android") screenStyling.push(styles.androidPadding)
+
   return (
-    <View style={ styles.pageScreen }>
+    <View style={ screenStyling }>
       <Text style={ styles.mainTitle }>Sudoku</Text>
 
       <View style = { styles.formGroup }>
@@ -38,7 +42,7 @@ export default function Home({ navigation }) {
 
       <TouchableOpacity
         style = {styles.customButton}
-        onPress = { () => navigation.replace("Game", { playerName, difficulty }) }
+        onPress = { () => navigation.replace("Game", { playerName: playerName || "Guess", difficulty }) }
       >
         <Text style={styles.buttonText}>Start!</Text>
       </TouchableOpacity>     
@@ -53,6 +57,10 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "space-between",
     backgroundColor: "navajowhite"
+  },
+
+  androidPadding: {
+    paddingTop: StatusBar.currentHeight + 30
   },
 
   mainTitle: {

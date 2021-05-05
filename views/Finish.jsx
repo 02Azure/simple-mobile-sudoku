@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Platform, StatusBar } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Record from "../components/HighScoreTile" 
 
@@ -64,9 +64,13 @@ export default function Finish({ route, navigation }) {
       />
     )
   })
+
+  let screenStyling = [styles.pageScreen]
+
+  if(Platform.OS === "android") screenStyling.push(styles.androidPadding)
   
   return (
-    <View style={ styles.pageScreen }>
+    <View style={ screenStyling }>
       <Text style={ styles.mainTitle }>Correct!!</Text>
 
       <View style={ styles.centerContainer }>
@@ -106,6 +110,10 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "space-between",
     backgroundColor: "navajowhite"
+  },
+
+  androidPadding: {
+    paddingTop: StatusBar.currentHeight + 30
   },
 
   centerContainer: {

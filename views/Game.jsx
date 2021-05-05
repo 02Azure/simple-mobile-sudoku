@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from "react-redux"
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Platform, StatusBar } from 'react-native'
 import InputTile from "../components/InputTile"
 import { setBoard, setInitialBoard, getPuzzle } from "../store/actions"
 import deepCopy from "../helpers/deepCopy2DimArr"
@@ -28,23 +28,15 @@ export default function Game({ route, navigation }) {
         dispatch(setBoard(data.board))
         setLoading(false)
 
-        setTimeout(() => {
-          setCountup(countup + 1)
+        countupId.current = setInterval(() => {
+          setCountup(prevCount => prevCount + 1)
         }, 1000)
       })
   }, [])
 
   useEffect(() => {
-    if(countup) {
-      countupId.current = (setTimeout(() => {
-        setCountup(countup + 1)
-      }, 1000))
-    }
-  }, [countup])
-
-  useEffect(() => {
     return () => {
-      clearTimeout(countupId.current) //unsubscribe saat unmount
+      clearInterval(countupId.current) //unsubscribe saat unmount
     }
   },[])
 
@@ -140,8 +132,12 @@ export default function Game({ route, navigation }) {
   countup < 600 ? min = "0" + Math.floor(countup / 60) : min = Math.floor(countup / 60)
   countup % 60 < 10 ? sec = "0" + countup % 60 : sec = countup % 60		
 
+  let screenStyling = [styles.pageScreen]
+
+  if(Platform.OS === "android") screenStyling.push(styles.androidPadding)
+
   return (
-    <View style={ styles.pageScreen }>
+    <View style={ screenStyling }>
       <Text style={ styles.mainTitle } >Sudoku</Text>
       { loading ? 
         <Text style={ styles.loadingText }>Generating puzzle board...</Text> 
@@ -189,6 +185,10 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     height: "100%",
     backgroundColor: "navajowhite"
+  },
+
+  androidPadding: {
+    paddingTop: StatusBar.currentHeight + 30
   },
 
   mainTitle: {
