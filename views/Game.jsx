@@ -17,6 +17,7 @@ export default function Game({ route, navigation }) {
 
   const countupId = useRef(0) //karena state tidak terbaca di hook component will unmount
 
+  const limit = 900
   let inputTiles = []
   let boardSize = 9
 
@@ -128,13 +129,13 @@ export default function Game({ route, navigation }) {
     }
   }
   // ============== timer display =====================
-  let limit = 900 - countup // time limit: 15 menit
+  let timer = limit - countup // time limit: 15 menit
   let min, sec; //mengatur display yang timer yang ditampilkan dalam format mm:ss
   let timerStyling = [styles.countdownTimer]
 
-  if(limit > 0) {
-    limit < 600 ? min = "0" + Math.floor(limit / 60) : min = Math.floor(limit / 60)
-    limit % 60 < 10 ? sec = "0" + limit % 60 : sec = limit % 60		
+  if(timer > 0) {
+    timer < 600 ? min = "0" + Math.floor(timer / 60) : min = Math.floor(timer / 60)
+    timer % 60 < 10 ? sec = "0" + timer % 60 : sec = timer % 60		
 
   } else {
     min = "00"

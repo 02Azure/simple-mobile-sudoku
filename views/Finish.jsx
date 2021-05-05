@@ -18,36 +18,43 @@ export default function Finish({ route, navigation }) {
     try {
       let recordData = await AsyncStorage.getItem(difficulty)
 
-      if(recordData) { //jika record sudah ada
-        recordData = JSON.parse(recordData)
-
-        let indexHighest
-        let highestTime = 0
-        
-        //cari record yg punya time tertinggi
-        recordData.forEach((record, i)=> {
-          if(record.time > highestTime) {
-            highestTime = record.time
-            indexHighest = i
-          }
-        })
-
-        if(recordData.length < 5) { //jika record masih kurang dari 5
-          recordData.push(newData) //langsung masukkan hasil baru
-          await AsyncStorage.setItem(difficulty, JSON.stringify(recordData))
+      if(newData.time < limit) { //jika dibawah timelimit
+        if(recordData) { //jika record sudah ada
+          recordData = JSON.parse(recordData)
+  
+          let indexHighest
+          let highestTime = 0
+          
+          //cari record yg punya time tertinggi
+          recordData.forEach((record, i)=> {
+            if(record.time > highestTime) {
+              highestTime = record.time
+              indexHighest = i
+            }
+          })
+  
+          if(recordData.length < 5) { //jika record masih kurang dari 5
+            recordData.push(newData) //langsung masukkan hasil baru
+            await AsyncStorage.setItem(difficulty, JSON.stringify(recordData))
+            setIsNewRecord(true)
+  
+          } else if ( newData.time < highestTime ) { // jika sudah 5, masukkan kalau data baru punya time lebih rendah
+            recordData[indexHighest] = newData
+            await AsyncStorage.setItem(difficulty, JSON.stringify(recordData))
+            setIsNewRecord(true)
+          } 
+  
+          setHallOfFame(recordData)
+  
+        } else { // jika belum ada record samsek, set data baru sebagai array kemudian masukkan ke storage
+          await AsyncStorage.setItem(difficulty, JSON.stringify([newData])) 
+          setHallOfFame([newData])
           setIsNewRecord(true)
+        }
+      }
 
-        } else if ( newData.time < highestTime ) { // jika sudah 5, masukkan kalau data baru punya time lebih rendah
-          recordData[indexHighest] = newData
-          await AsyncStorage.setItem(difficulty, JSON.stringify(recordData))
-          setIsNewRecord(true)
-        } 
+      else { // jika diatas time limit, pasti tidak masuk halloffame
         setHallOfFame(recordData)
-
-      } else { // jika belum ada record samsek, set data baru sebagai array kemudian masukkan ke storage
-        await AsyncStorage.setItem(difficulty, JSON.stringify([newData])) 
-        setHallOfFame([newData])
-        setIsNewRecord(true)
       }
 
     } catch(error) {
