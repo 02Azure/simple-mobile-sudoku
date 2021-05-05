@@ -133,6 +133,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  subText: {
+    textAlign: "center"
+  }, 
+
   finishImage: {
     height: "50%"
   },
