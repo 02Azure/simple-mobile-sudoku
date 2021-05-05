@@ -53,14 +53,14 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   pageScreen: {
     alignItems: "center",
-    paddingVertical: 30,
     height: "100%",
+    paddingVertical: 20,
     justifyContent: "space-between",
     backgroundColor: "navajowhite"
   },
 
   androidPadding: {
-    paddingTop: StatusBar.currentHeight + 30
+    paddingTop: StatusBar.currentHeight + 20
   },
 
   mainTitle: {

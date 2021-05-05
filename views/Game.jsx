@@ -182,13 +182,13 @@ export default function Game({ route, navigation }) {
 const styles = StyleSheet.create({
   pageScreen: {
     alignItems: "center",
-    paddingTop: 30,
+    paddingTop: 20,
     height: "100%",
     backgroundColor: "navajowhite"
   },
 
   androidPadding: {
-    paddingTop: StatusBar.currentHeight + 30
+    paddingTop: StatusBar.currentHeight + 20
   },
 
   mainTitle: {

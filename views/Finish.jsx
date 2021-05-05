@@ -18,12 +18,13 @@ export default function Finish({ route, navigation }) {
     try {
       let recordData = await AsyncStorage.getItem(difficulty)
 
-      if(recordData) {
+      if(recordData) { //jika record sudah ada
         recordData = JSON.parse(recordData)
 
         let indexHighest
         let highestTime = 0
         
+        //cari record yg punya time tertinggi
         recordData.forEach((record, i)=> {
           if(record.time > highestTime) {
             highestTime = record.time
@@ -31,21 +32,19 @@ export default function Finish({ route, navigation }) {
           }
         })
 
-        if(recordData.length < 5) {
-          recordData.push(newData)
+        if(recordData.length < 5) { //jika record masih kurang dari 5
+          recordData.push(newData) //langsung masukkan hasil baru
           await AsyncStorage.setItem(difficulty, JSON.stringify(recordData))
           setIsNewRecord(true)
 
-        } else if ( newData.time < highestTime ) {
+        } else if ( newData.time < highestTime ) { // jika sudah 5, masukkan kalau data baru punya time lebih rendah
           recordData[indexHighest] = newData
           await AsyncStorage.setItem(difficulty, JSON.stringify(recordData))
           setIsNewRecord(true)
-
         } 
         setHallOfFame(recordData)
-        console.log(recordData)
 
-      } else {
+      } else { // jika belum ada record samsek, set data baru sebagai array kemudian masukkan ke storage
         await AsyncStorage.setItem(difficulty, JSON.stringify([newData])) 
         setHallOfFame([newData])
         setIsNewRecord(true)
@@ -106,14 +105,14 @@ export default function Finish({ route, navigation }) {
 const styles = StyleSheet.create({
   pageScreen: {
     alignItems: "center",
-    paddingVertical: 30,
+    paddingVertical: 20,
     height: "100%",
     justifyContent: "space-between",
     backgroundColor: "navajowhite"
   },
 
   androidPadding: {
-    paddingTop: StatusBar.currentHeight + 30
+    paddingTop: StatusBar.currentHeight + 20
   },
 
   centerContainer: {
