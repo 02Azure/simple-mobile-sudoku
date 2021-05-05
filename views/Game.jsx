@@ -62,7 +62,7 @@ export default function Game({ route, navigation }) {
       .then(data => {
         if(data.status === "solved") {
           clearTimeout(countupId)
-          navigation.replace("Finish", { playerName, countup, difficulty })
+          navigation.replace("Finish", { playerName, countup, difficulty, limit })
 
         } else {
           Alert.alert(
@@ -128,9 +128,21 @@ export default function Game({ route, navigation }) {
     }
   }
   // ============== timer display =====================
+  let limit = 900 - countup // time limit: 15 menit
   let min, sec; //mengatur display yang timer yang ditampilkan dalam format mm:ss
-  countup < 600 ? min = "0" + Math.floor(countup / 60) : min = Math.floor(countup / 60)
-  countup % 60 < 10 ? sec = "0" + countup % 60 : sec = countup % 60		
+  let timerStyling = [styles.countdownTimer]
+
+  if(limit > 0) {
+    limit < 600 ? min = "0" + Math.floor(limit / 60) : min = Math.floor(limit / 60)
+    limit % 60 < 10 ? sec = "0" + limit % 60 : sec = limit % 60		
+
+  } else {
+    min = "00"
+    sec = "00"
+    timerStyling.push(styles.timersUp)
+  }
+
+
 
   let screenStyling = [styles.pageScreen]
 
@@ -145,7 +157,7 @@ export default function Game({ route, navigation }) {
         :
 
         <View style= { styles.puzzleContainer }>
-          <Text style={ styles.countupTimer }>{ min + ":" + sec }</Text>
+          <Text style={ [timerStyling] }>{ min + ":" + sec }</Text>
 
           <View style={ styles.tilesContainer }>
             { inputTiles }
@@ -209,9 +221,13 @@ const styles = StyleSheet.create({
     backgroundColor: "navajowhite"
   },
 
-  countupTimer: {
+  countdownTimer: {
     fontSize: 16,
     fontWeight: "bold"
+  }, 
+
+  timersUp: {
+    color: "red"
   }, 
 
   tilesContainer: {

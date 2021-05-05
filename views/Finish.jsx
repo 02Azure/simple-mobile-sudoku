@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Record from "../components/HighScoreTile" 
 
 export default function Finish({ route, navigation }) {
-  const { playerName, countup, difficulty } = route.params
+  const { playerName, countup, difficulty, limit } = route.params
   const [hallOfFame, setHallOfFame] = useState([])
   const [isNewRecord, setIsNewRecord] = useState(false)
   
@@ -55,7 +55,10 @@ export default function Finish({ route, navigation }) {
     }
   }
 
-  let recordList = hallOfFame.map((record, i) => {
+  let recordList = hallOfFame
+    .map(record => record)
+    .sort((a, b) => a.time - b.time)
+    .map((record, i) => { 
     return(
       <Record
         { ...record }
